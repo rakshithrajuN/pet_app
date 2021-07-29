@@ -4,21 +4,23 @@ import 'DrawerScreen.dart';
 import 'HomeScreen.dart';
 
 void main(){
-  runApp(MaterialApp(home: HomePage(),));
+  runApp(new MyApp());
 }
-
-class HomePage extends StatelessWidget {
-  const HomePage({ Key? key }) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({ Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          DrawerScreen(),
-          HomeScreen()
+    return MaterialApp(
+       home:    Scaffold(
+        body: Stack(
+          children: [
+            DrawerScreen(),
+            HomeScreen()
         ],
       )
+       )     
     );
+      
   }
 }
