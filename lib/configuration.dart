@@ -11,3 +11,10 @@ List<Map> categories = [
   {'name': 'Bird', 'iconPath': 'assets/scarlet-macaw.png'},
   {'name': 'Rabbit', 'iconPath': 'assets/rabbit.png'},
 ];
+
+List<Map> dogimg = [
+  {'name': 'Raxxy','breed':'BullDog','iconPath': 'assets/buldog.jpg'},
+  { 'name': 'Jimmy','breed':'German Shapord','iconPath': 'assets/german.jpg'},
+  { 'name': 'Show','breed':'PitBull','iconPath': 'assets/pitbull.jpg'},
+];
+
