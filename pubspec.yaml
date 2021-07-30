@@ -54,6 +54,9 @@ flutter:
     - assets/dog.png
     - assets/rabbit.png
     - assets/scarlet-macaw.png
+    - assets/buldog.jpg
+    - assets/german.jpg
+    - assets/pitbull.jpg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
