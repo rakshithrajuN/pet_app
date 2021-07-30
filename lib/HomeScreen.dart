@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return GestureDetector(
                   onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Petdetails()));
+                        MaterialPageRoute(builder: (context) => Petdetails(petname: doc['petname'],breed: doc['breed'],year: doc['year'],)));
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
