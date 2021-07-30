@@ -1,7 +1,7 @@
 // import 'dart:async';
 
 import 'package:flutter/material.dart';
-//import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'auth.dart';
 import '../widgets/loader.dart';
 import '../widgets/primary_button.dart';
@@ -45,22 +45,7 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
-  void googlelogin() async {
-    try {
-      String user = await widget.auth.signinWithGoogle();
-      Loader();
-      print('google');
-      setState(() {
-        _authHint = 'Signed In\n\nUser id: $user';
-      });
-      widget.onSignIn();
-      googleSignIn = true;
-    } catch (e) {
-      setState(() {
-        _authHint = 'sigin failed';
-      });
-    }
-  }
+  
 
   void validateAndSubmit() async {
     if (validateAndSave()) {
@@ -69,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       try {
-        String userId = _formType == FormType.login
+        String? userId = _formType == FormType.login
             ? await widget.auth.signIn(_email!, _password!)
             : await widget.auth.createUser(_name!, _email!, _password!);
         setState(() {
@@ -86,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
         _formType == FormType.login
             ? msg = 'Login Failed'
             : msg = 'Registration Failed';
-       // Alert(context: context, title: msg, desc: _authHint).show();
+        Alert(context: context, title: msg, desc: _authHint).show();
         print(e);
       }
     } else {
@@ -379,42 +364,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: validateAndSubmit),
           SizedBox(height: 5),
           SizedBox(height: 5),
-          new Text(
-            'OR',
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.grey,
-            ),
-          ),
-          SizedBox(height: 5),
-          new ConstrainedBox(
-            constraints: BoxConstraints.expand(height: 55.0),
-            child: new RaisedButton(
-              onPressed: googlelogin,
-              shape: new RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-              color: Colors.blue,
-              child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image(image: AssetImage("assets/dog.png"), height: 35.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          'continue with Google',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )),
-            ),
-          ),
+         
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
             new FlatButton(
                 key: new Key('need-account'),
@@ -455,34 +405,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           SizedBox(height: 5),
-          new ConstrainedBox(
-            constraints: BoxConstraints.expand(height: 55.0),
-            child: new RaisedButton(
-              onPressed: googlelogin,
-              shape: new RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-              color: Colors.blue,
-              child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image(image: AssetImage("assets/dog.png"), height: 35.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          'continue with Google',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )),
-            ),
-          ),
+          
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
             new FlatButton(
                 key: new Key('need-login'),
