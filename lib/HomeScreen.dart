@@ -22,8 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
       transform: Matrix4.translationValues(xOffset, yOffset, 0)..scale(scaleFactor),
       duration: Duration(milliseconds: 250),
       color: Colors.grey[200],
-      child:SingleChildScrollView(
-        child: Column(
+      child: Column(
           children :[
             SizedBox(
               height:50
@@ -101,53 +100,54 @@ class _HomeScreenState extends State<HomeScreen> {
       
               ),
               ),
-              
-                  ListView.builder(
-                     shrinkWrap: true,
-                     scrollDirection: Axis.vertical,
-                      itemCount: dogimg.length,
-                      itemBuilder: (context,index){
-                        return GestureDetector(
-                          onTap: (){
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=>Petdetails()));
-                          },
-                          child: Padding(
-                                     padding: const EdgeInsets.all(16.0),
-                                      child: Container(
-                                      decoration : BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
+              Expanded(
+                child: ListView.builder(
+                       shrinkWrap: true,
+                       scrollDirection: Axis.vertical,
+                        itemCount: dogimg.length,
+                        itemBuilder: (context,index){
+                          return GestureDetector(
+                            onTap: (){
+                              Navigator.push(context,MaterialPageRoute(builder: (context)=>Petdetails()));
+                            },
+                            child: Padding(
+                                       padding: const EdgeInsets.all(16.0),
+                                        child: Container(
+                                        decoration : BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                          child: Row(
+                            children: [
+                              Image.asset(dogimg[index]['iconPath'],width: 100 ,height:140) ,
+                              SizedBox(
+                                width: 70,
                               ),
-                        child: Row(
-                          children: [
-                            Image.asset(dogimg[index]['iconPath'],width: 100 ,height:100) ,
-                            SizedBox(
-                              width: 70,
+                              Column(
+                                children:[
+                                  Text(dogimg[index]['name'],style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                                  Text(dogimg[index]['breed'],style: TextStyle(fontSize: 10),),
+                                  Text('2.5 Years')
+                                ],
+                                
+                              ),
+                                                
+                            ],
+                             ),
+                              ),
                             ),
-                            Column(
-                              children:[
-                                Text(dogimg[index]['name'],style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-                                Text(dogimg[index]['breed'],style: TextStyle(fontSize: 10),),
-                                Text('2.5 Years')
-                              ],
+                          );
+                      
                               
-                            ),
-                                              
-                          ],
-                           ),
-                            ),
-                          ),
-                        );
-                    
-                            
-                      }
-                    ),
-                    
+                        }
+                      ),
+                       ),
+             
                   
                
           ]
         ),
-      )
+      
     );
   }
 }

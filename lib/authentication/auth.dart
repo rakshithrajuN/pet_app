@@ -15,26 +15,15 @@ abstract class BaseAuth {
 
 class Auth implements BaseAuth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-<<<<<<< HEAD
-  final CollectionReference username = FirebaseFirestore.instance.collection('name');
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  Future<String> signIn(String email, String password) async {
-    final FirebaseUser user = (await FirebaseAuth.instance
-=======
   final CollectionReference username =
       FirebaseFirestore.instance.collection('user');
 
   //signIn method
   Future<String?> signIn(String email, String password) async {
     final User? user = (await FirebaseAuth.instance
->>>>>>> 94f3a1596f837d47585693012bc508e7df9448ee
             .signInWithEmailAndPassword(email: email, password: password))
         .user;
-    return user!.uid == 'wBOMg2bZo1TMDuHSf4512Gkf9E63'
-        ? user.uid
-        : user.emailVerified
-            ? user.uid
-            : null;
+    return user!.uid;
   }
 
   Future<bool> verifEmail() async {
@@ -53,8 +42,8 @@ class Auth implements BaseAuth {
       'username': name,
     });
 
-    await user.sendEmailVerification();
-    return user.emailVerified ? user.uid : null;
+    
+    return user.uid;
   }
 
   @override
@@ -62,13 +51,7 @@ class Auth implements BaseAuth {
   Future<String?> currentUser() async {
     User? user = await _firebaseAuth.currentUser;
     print(user);
-    return user != null
-        ? user.uid == 'wBOMg2bZo1TMDuHSf4512Gkf9E63'
-            ? user.uid
-            : user.emailVerified
-                ? user.uid
-                : null
-        : null;
+    return user != null? user.uid: null;
   }
 
   Future<void> resetPassword(String email) async {
