@@ -16,7 +16,7 @@ abstract class BaseAuth {
 
 class Auth implements BaseAuth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final CollectionReference username = Firestore.instance.collection('name');
+  final CollectionReference username = FirebaseFirestore.instance.collection('name');
   final GoogleSignIn googleSignIn = GoogleSignIn();
   Future<String> signIn(String email, String password) async {
     final FirebaseUser user = (await FirebaseAuth.instance
