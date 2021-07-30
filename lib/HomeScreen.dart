@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_app/configuration.dart';
+import 'package:pet_app/widgets/pet_details.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({ Key? key }) : super(key: key);
@@ -21,81 +22,165 @@ class _HomeScreenState extends State<HomeScreen> {
       transform: Matrix4.translationValues(xOffset, yOffset, 0)..scale(scaleFactor),
       duration: Duration(milliseconds: 250),
       color: Colors.grey[200],
-      child:Column(
-        children :[
-          SizedBox(
-            height:50
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              isDrawerOpen?IconButton(icon:Icon(Icons.arrow_back_ios),onPressed: (){
-                xOffset=0;
-                yOffset=0;
-                scaleFactor=1;
-                isDrawerOpen=false;
-                }):IconButton(icon:Icon(Icons.menu),onPressed: (){
-                setState(() {
-                  xOffset =250;
-                  yOffset = 150;
-                  scaleFactor =0.6;
-                  isDrawerOpen = true;
-                });
-
-              }),
-
-                  Text('Welcome To PET App')
-             
-            ],
-          ),
-          Container(
-              padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
-              margin: EdgeInsets.symmetric(vertical: 30,horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20)
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(Icons.search),
-                  Text('Search pet to adopt'),
-                  Icon(Icons.settings)
-
-                ],
-              ),
+      child:SingleChildScrollView(
+        child: Column(
+          children :[
+            SizedBox(
+              height:50
             ),
-
-            Container(height: 120,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              itemBuilder: (context,index){
-                return Container(
-                  child: Column(
-                    children: [
-                      Container(
-
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.only(left: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: shadowList,
-                          borderRadius: BorderRadius.circular(10)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                isDrawerOpen?IconButton(icon:Icon(Icons.arrow_back_ios),onPressed: (){
+                  setState(() {
+                  xOffset=0;
+                  yOffset=0;
+                  scaleFactor=1;
+                  isDrawerOpen=false;
+                  });
+                  }):IconButton(icon:Icon(Icons.menu),onPressed: (){
+                  setState(() {
+                    xOffset =250;
+                    yOffset = 150;
+                    scaleFactor =0.6;
+                    isDrawerOpen = true;
+                  });
+      
+                }),
+      
+                    Padding(
+                      padding: const EdgeInsets.only(left: 85),
+                      child: Text('Welcome To PET App'),
+                    )
+               
+              ],
+            ),
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+                margin: EdgeInsets.symmetric(vertical: 30,horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20)
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.search),
+                    Text('Search pet to adopt'),
+                    Icon(Icons.settings)
+      
+                  ],
+                ),
+              ),
+      
+              Container(height: 120,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: categories.length,
+                itemBuilder: (context,index){
+                  return Container(
+                    child: Column(
+                      children: [
+                        Container(
+      
+                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.only(left: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: shadowList,
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Image.asset(categories[index]['iconPath'],       height: 50,
+                            width: 50,color: Colors.grey[700],),
                         ),
-                        child: Image.asset(categories[index]['iconPath'],       height: 50,
-                          width: 50,color: Colors.grey[700],),
-                      ),
-                      Text(categories[index]['name'])
-                    ],
-                  ),
-                );
-              },
-
-            ),
-            ),
-        ]
+                         Text(categories[index]['name'])
+                      ],
+                    ),
+                  );
+                },
+      
+              ),
+              ),
+              
+                  ListView.builder(
+                     shrinkWrap: true,
+                     scrollDirection: Axis.vertical,
+                      itemCount: dogimg.length,
+                      itemBuilder: (context,index){
+                        return GestureDetector(
+                          onTap: (){
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>Petdetails()));
+                          },
+                          child: Padding(
+                                     padding: const EdgeInsets.all(16.0),
+                                      child: Container(
+                                      decoration : BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                        child: Row(
+                          children: [
+                            Image.asset(dogimg[index]['iconPath'],width: 100 ,height:100) ,
+                            SizedBox(
+                              width: 70,
+                            ),
+                            Column(
+                              children:[
+                                Text(dogimg[index]['name'],style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                                Text(dogimg[index]['breed'],style: TextStyle(fontSize: 10),),
+                                Text('2.5 Years')
+                              ],
+                              
+                            ),
+                                              
+                          ],
+                           ),
+                            ),
+                          ),
+                        );
+                    
+                            
+                      }
+                    ),
+                    
+                  
+               
+          ]
+        ),
       )
     );
   }
 }
+
+
+
+
+
+
+
+
+/*Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  decoration : BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                  child: Row(
+                    children: [
+                      Image.asset(dogimg[index]['iconPath'],width: 150,) ,
+                      SizedBox(
+                        width: 70,
+                      ),
+                      Column(
+                        children:[
+                          Text(dogimg[index]['name'],style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                          Text(dogimg[index]['breed'],style: TextStyle(fontSize: 10),),
+                          Text('2.5 Years')
+                        ]
+                      )
+                    ],
+                  ),
+                ),
+              );*/
+                      
