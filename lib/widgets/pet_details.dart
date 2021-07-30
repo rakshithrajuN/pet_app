@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Petdetails extends StatefulWidget {
-  const Petdetails({ Key? key }) : super(key: key);
+   Petdetails({ Key? key,required this.petname,required this.breed,required this.year }) : super(key: key);
+  final String petname;
+  final String breed;
+  final String year;
 
   @override
   _PetdetailsState createState() => _PetdetailsState();
@@ -14,9 +17,6 @@ class _PetdetailsState extends State<Petdetails> {
       body: Container(
         child: Column(
             children: [
-              IconButton(onPressed:(){
-                
-              }, icon: Icon(Icons.share)),
               Expanded(
                 child: Container(
                   color: Colors.blueGrey[300],
@@ -26,6 +26,7 @@ class _PetdetailsState extends State<Petdetails> {
               Expanded(
                 child: Container(
                   color: Colors.white,
+                  child: Image.asset('assets/buldog.jpg'),
                 ),
               )
             ],
