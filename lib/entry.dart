@@ -23,14 +23,7 @@ class _EntryPageState extends State<EntryPage> {
     }
   }
 
-  void _googlesignOut() async {
-    try {
-      await widget.auth.signOutGoogle();
-      widget.onSignOut();
-    } catch (e) {
-      print(e);
-    }
-  }
+ 
 
 
   @override
