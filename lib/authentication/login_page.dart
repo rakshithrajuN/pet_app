@@ -29,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   static final formKey = new GlobalKey<FormState>();
   static bool a = true;
   String? _name;
+  String? _phone;
   String? _email;
   String? _password;
   bool loading = false;
@@ -56,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
       try {
         String? userId = _formType == FormType.login
             ? await widget.auth.signIn(_email!, _password!)
-            : await widget.auth.createUser(_name!, _email!, _password!);
+            : await widget.auth.createUser(_name!,_phone!, _email!, _password!);
         setState(() {
           _authHint = 'Signed In\n\nUser id: $userId';
         });
@@ -218,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
       ];
     } else {
       return [
-        SizedBox(height: 150),
+        SizedBox(height: 100),
         new Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -288,6 +289,37 @@ class _LoginPageState extends State<LoginPage> {
                           ? 'user name must be at least 2 charecter long'
                           : null,
                   onSaved: (val) => _name = val,
+                ),
+              ),
+               Padding(
+                padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                child: new TextFormField(
+                  key: new Key('phone'),
+                  decoration: InputDecoration(
+                    hintText: 'Enter Your Phone nuber Here...',
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Colors.green[400],
+                    ),
+                    hintStyle: TextStyle(color: Colors.grey),
+                    filled: true,
+                    fillColor: Colors.white70,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                      borderSide: BorderSide(color: Colors.blue, width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      borderSide: BorderSide(color: Colors.blue, width: 1),
+                    ),
+                  ),
+                  autocorrect: false,
+                  validator: (val) => val!.isEmpty
+                      ? 'Phone number can\'t be empty.'
+                      : val.length < 10
+                          ? 'Invalid phone number'
+                          : null,
+                  onSaved: (val) => _phone = val,
                 ),
               ),
               Padding(

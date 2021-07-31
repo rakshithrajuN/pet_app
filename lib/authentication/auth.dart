@@ -7,8 +7,10 @@ abstract class BaseAuth {
   Future<String?> currentUser();
   Future<String?> getname();
   Future<void> signOut();
+  Future<String?> getPhone();
   Future<String?> signIn(String email, String password);
-  Future<String?> createUser(String name, String email, String password);
+  Future<String?> createUser(
+      String name, String phone, String email, String password);
   Future<bool> verifEmail();
   Future<void> resetPassword(String email);
 }
@@ -29,20 +31,22 @@ class Auth implements BaseAuth {
   Future<bool> verifEmail() async {
     User? user = await _firebaseAuth.currentUser;
     bool? d;
-    await user.sendEmailVerification().then((value) => d = true);
+    await user!.sendEmailVerification().then((value) => d = true);
     return d!;
   }
 
 //Register user details
-  Future<String?> createUser(String name, String email, String password) async {
+  Future<String?> createUser(
+      String name, String phone, String email, String password) async {
     final UserCredential result = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
     User? user = result.user;
-    await username.doc(user.uid).set({
+
+    await username.doc(user!.uid).set({
       'username': name,
+      'phone': phone,
     });
 
-    
     return user.uid;
   }
 
@@ -51,7 +55,20 @@ class Auth implements BaseAuth {
   Future<String?> currentUser() async {
     User? user = await _firebaseAuth.currentUser;
     print(user);
-    return user != null? user.uid: null;
+    return user != null ? user.uid : null;
+  }
+
+  Future<String?> getPhone() async {
+    User? user = await _firebaseAuth.currentUser;
+    print(user);
+    String? phone = '';
+    await username.doc(user!.uid).get().then((value) {
+      phone = value.get('phone');
+      print(phone);
+    });
+    if (phone != '') {
+      return phone;
+    }
   }
 
   Future<void> resetPassword(String email) async {
@@ -62,7 +79,7 @@ class Auth implements BaseAuth {
     User? user = await _firebaseAuth.currentUser;
     print(user);
     String? fid = '';
-    await username.doc(user.uid).get().then((value) {
+    await username.doc(user!.uid).get().then((value) {
       fid = value.get('username');
       print(fid);
     });
