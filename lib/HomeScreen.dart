@@ -1,8 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:pet_app/configuration.dart';
 import 'package:pet_app/widgets/form_page.dart';
 import 'package:pet_app/widgets/pet_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pet_app/widgets/show.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,60 +20,70 @@ class _HomeScreenState extends State<HomeScreen> {
   double scaleFactor = 1;
   bool isDrawerOpen = false;
   bool search = false;
-TextEditingController searchControler = TextEditingController();
+  String filter = '';
+  bool dpress = false;
+  bool cpress = false;
+  bool rpress = false;
+  bool bpress = false;
+  Color fc = Colors.black;
+  TextEditingController searchControler = TextEditingController();
 
- Widget _buildGride(QuerySnapshot? snapshot) {
+  Widget _buildGride(QuerySnapshot? snapshot) {
     return ListView.builder(
         itemCount: snapshot!.docs.length,
         itemBuilder: (context, index) {
           final doc = snapshot.docs[index];
-          print(doc.id);
-         
+          print(doc.data());
+
           return GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Petdetails(petname: doc['petname'],breed: doc['breed'],year: doc['year'],)));
-                  },
-            
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        children: [
-                          Image.network(doc['img'],
-                              width: 100, height: 140),
-                          SizedBox(
-                            width: 70,
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                doc['petname'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                              ),
-                              Text(
-                                doc['breed'],
-                                style: TextStyle(fontSize: 10),
-                              ),
-                              Text(
-                                doc['year'],
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Petdetails(
+                            petname: doc['petname'],
+                            breed: doc['breed'],
+                            year: doc['year'],
+                          )));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  children: [
+                    Image.network(doc['img'], width: 100, height: 140),
+                    SizedBox(
+                      width: 70,
                     ),
-                  ),
-                );
+                    Column(
+                      children: [
+                        Text(
+                          doc['petname'],
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        Text(
+                          doc['breed'],
+                          style: TextStyle(fontSize: 10),
+                        ),
+                        Text(
+                          doc['year'],
+                          style: TextStyle(fontSize: 10),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
         });
   }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -110,7 +123,6 @@ TextEditingController searchControler = TextEditingController();
             )
           ],
         ),
-       
         Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           margin: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
@@ -121,40 +133,63 @@ TextEditingController searchControler = TextEditingController();
             children: [
               Icon(Icons.search),
               SizedBox(
-                width:190,
+                width: 190,
                 child: TextField(
-                        onChanged: (value) {
-                          if (value.isNotEmpty) {
-                            setState(() {
-                              search = true;
-                             
-                            });
-                          } else {
-                            setState(() {
-                              search = false;
-                            });
-                          }
-                        },
-                        controller: searchControler,
-                        decoration: InputDecoration(
-                          hintText: "Search Pet Breed to Adopt ",
-                          border: InputBorder.none,
-                         
-                        ),
-                      ),
+                  onChanged: (value) {
+                    if (value.isNotEmpty) {
+                      setState(() {
+                        search = true;
+                      });
+                    } else {
+                      setState(() {
+                        search = false;
+                        filter = '';
+                        cpress = false;
+                        rpress = false;
+                        bpress = false;
+                        dpress = false;
+                      });
+                    }
+                  },
+                  controller: searchControler,
+                  decoration: InputDecoration(
+                    hintText: "Search Pet Breed to Adopt ",
+                    border: InputBorder.none,
+                  ),
+                ),
               ),
-              
-              IconButton(icon: Icon(Icons.settings),onPressed: (){},)
+              IconButton(
+                icon: Icon(Icons.settings),
+                onPressed: () {
+                   Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Showpage(),
+                      ));
+                },
+              )
             ],
           ),
         ),
         Container(
           height: 120,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              return Container(
+          child: Row(children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  dpress = !dpress;
+                  filter = '';
+                  cpress = false;
+                  rpress = false;
+                  bpress = false;
+                });
+                if (dpress) {
+                  setState(() {
+                    filter = 'dog';
+                  });
+                }
+              },
+              child: Container(
                 child: Column(
                   children: [
                     Container(
@@ -165,53 +200,197 @@ TextEditingController searchControler = TextEditingController();
                           boxShadow: shadowList,
                           borderRadius: BorderRadius.circular(10)),
                       child: Image.asset(
-                        categories[index]['iconPath'],
+                        categories[0]['iconPath'],
                         height: 50,
                         width: 50,
                         color: Colors.grey[700],
                       ),
                     ),
-                    Text(categories[index]['name'])
+                    Text(
+                      categories[0]['name'],
+                      style: TextStyle(
+                          color: dpress ? Colors.orange : Colors.black),
+                    )
                   ],
                 ),
-              );
-            },
-          ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  cpress = !cpress;
+                  filter = '';
+                  dpress = false;
+                  rpress = false;
+                  bpress = false;
+                });
+                if (cpress) {
+                  setState(() {
+                    filter = 'cat';
+                  });
+                }
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.only(left: 20),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: shadowList,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Image.asset(
+                        categories[1]['iconPath'],
+                        height: 50,
+                        width: 50,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    Text(
+                      categories[1]['name'],
+                      style: TextStyle(
+                          color: cpress ? Colors.orange : Colors.black),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  bpress = !bpress;
+                  filter = '';
+                  cpress = false;
+                  rpress = false;
+                  dpress = false;
+                });
+                if (bpress) {
+                  setState(() {
+                    filter = 'bird';
+                  });
+                }
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.only(left: 20),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: shadowList,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Image.asset(
+                        categories[2]['iconPath'],
+                        height: 50,
+                        width: 50,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    Text(
+                      categories[2]['name'],
+                      style: TextStyle(
+                          color: bpress ? Colors.orange : Colors.black),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  rpress = !rpress;
+                  filter = '';
+                  cpress = false;
+                  dpress = false;
+                  bpress = false;
+                });
+                if (rpress) {
+                  setState(() {
+                    filter = 'rabbit';
+                  });
+                }
+              },
+              child: Container(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.only(left: 20),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: shadowList,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Image.asset(
+                        categories[3]['iconPath'],
+                        height: 50,
+                        width: 50,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    Text(
+                      categories[3]['name'],
+                      style: TextStyle(
+                          color: rpress ? Colors.orange : Colors.black),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ]),
         ),
-
-         search? StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection("pet")
-                          .where(
-                            'breed',
-                            isGreaterThanOrEqualTo: searchControler.text,
-                          )
-                          .where('breed', isLessThan: searchControler.text + 'z')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        print(snapshot.data);
-                        if (!snapshot.hasData) return LinearProgressIndicator();
-                        if (snapshot.hasError)
-                          return CircularProgressIndicator();
-                        return Expanded(child: _buildGride(snapshot.data));
-                      },
-                    ):StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection("pet")
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            print(snapshot.data);
-                            if (!snapshot.hasData)
-                              return LinearProgressIndicator();
-                            if (snapshot.hasError)
-                              return CircularProgressIndicator();
-                            return Expanded(child: _buildGride(snapshot.data));
-                          },
-                        ),
-                         
-        FloatingActionButton(onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> Formpage()));
-        },child: Icon(Icons.add),),
+        search
+            ? StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("pet")
+                    .where(
+                      'breed',
+                      isGreaterThanOrEqualTo: searchControler.text,
+                    )
+                    .where('breed', isLessThan: searchControler.text + 'z')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  // print(snapshot.data);
+                  if (!snapshot.hasData) return LinearProgressIndicator();
+                  if (snapshot.hasError) return CircularProgressIndicator();
+                  return Expanded(child: _buildGride(snapshot.data));
+                },
+              )
+            : filter != ''
+                ? StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("pet")
+                        .where(
+                          'pettype',
+                          isEqualTo: filter,
+                        )
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      // print(snapshot.data);
+                      if (!snapshot.hasData) return LinearProgressIndicator();
+                      if (snapshot.hasError) return CircularProgressIndicator();
+                      return Expanded(child: _buildGride(snapshot.data));
+                    },
+                  )
+                : StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("pet")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      //print(snapshot.data);
+                      if (!snapshot.hasData) return LinearProgressIndicator();
+                      if (snapshot.hasError) return CircularProgressIndicator();
+                      return Expanded(child: _buildGride(snapshot.data));
+                    },
+                  ),
+        FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Formpage()));
+          },
+          child: Icon(Icons.add),
+        ),
       ]),
     );
   }
