@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'DrawerScreen.dart';
 import 'HomeScreen.dart';
 
-void main(){
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
   runApp(new MyApp());
