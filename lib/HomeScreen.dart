@@ -41,7 +41,7 @@ TextEditingController searchControler = TextEditingController();
                       ),
                       child: Row(
                         children: [
-                          Image.asset(dogimg[1]['iconPath'],
+                          Image.network(doc['img'],
                               width: 100, height: 140),
                           SizedBox(
                             width: 70,

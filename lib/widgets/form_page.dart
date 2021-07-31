@@ -11,13 +11,11 @@ import 'package:pet_app/authentication/auth.dart';
 final Color yellow = Color(0xfffbc31b);
 final Color orange = Color(0xfffb6900);
 
-
 class Formpage extends StatefulWidget {
   const Formpage({Key? key}) : super(key: key);
 
   @override
-  _FormpageState createState() =>
-      _FormpageState();
+  _FormpageState createState() => _FormpageState();
 }
 
 class _FormpageState extends State<Formpage> {
@@ -25,7 +23,7 @@ class _FormpageState extends State<Formpage> {
   String? url;
 
   String? ph;
-var _formkey = GlobalKey<FormState>();
+  var _formkey = GlobalKey<FormState>();
   CollectionReference petusr = FirebaseFirestore.instance.collection('pet');
   String? _petname;
   String? _breed;
@@ -33,8 +31,9 @@ var _formkey = GlobalKey<FormState>();
   String? _location;
   String? _type;
   String? _price;
-
+  bool pick = false;
   String selectedtype = "dog";
+
   ///NOTE: Only supported on Android & iOS
   ///Needs image_picker plugin {https://pub.dev/packages/image_picker}
   final picker = ImagePicker();
@@ -57,6 +56,7 @@ var _formkey = GlobalKey<FormState>();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
+      pick = true;
       _imageFile = File(pickedFile!.path);
     });
   }
@@ -65,19 +65,20 @@ var _formkey = GlobalKey<FormState>();
     String fileName = basename(_imageFile!.path);
     User? user = await FirebaseAuth.instance.currentUser;
     print(user!.email);
+    String? ur;
     Reference firebaseStorageRef =
         FirebaseStorage.instance.ref().child('uploads/$fileName');
     TaskSnapshot uploadTask = await firebaseStorageRef.putFile(_imageFile!);
-     
-      if (uploadTask.state == TaskState.success) {
-        url = await uploadTask.ref.getDownloadURL();
-      
+
+    if (uploadTask.state == TaskState.success) {
+      ur = await uploadTask.ref.getDownloadURL();
     }
-    
+    setState(() {
+      url = ur;
+    });
+
     print(url);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -91,11 +92,11 @@ var _formkey = GlobalKey<FormState>();
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
-        children: <Widget>[
-          Container(
-            height: 111,
-              child: ClipRRect(
-                     // borderRadius: BorderRadius.circular(20.0),
+                children: <Widget>[
+                  Container(
+                    height: 111,
+                    child: ClipRRect(
+                      // borderRadius: BorderRadius.circular(20.0),
                       child: _imageFile != null
                           ? Image.file(_imageFile!)
                           : FlatButton(
@@ -106,15 +107,13 @@ var _formkey = GlobalKey<FormState>();
                               onPressed: pickImage,
                             ),
                     ),
-            ),
-                
-              
-          uploadImageButton(context),
-        ],
-      ),
+                  ),
+                  uploadImageButton(context),
+                ],
+              ),
             ),
             SizedBox(
-              height: 100,
+              height: 10,
             ),
             Form(
                 key: _formkey,
@@ -130,19 +129,14 @@ var _formkey = GlobalKey<FormState>();
                           }
                           return null;
                         },
-                        
-                        onSaved: (value) =>  _petname = value,
-                       
+                        onSaved: (value) => _petname = value,
                         decoration: const InputDecoration(
                           icon: Icon(Icons.animation),
                           hintText: 'Enter Pet Name',
                           labelText: 'Pet Name *',
                         ),
-                        
                       ),
-                      
                     ),
-                    
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
@@ -224,7 +218,6 @@ var _formkey = GlobalKey<FormState>();
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(value),
-                                
                               );
                             }).toList())),
                     Padding(
@@ -243,33 +236,42 @@ var _formkey = GlobalKey<FormState>();
                           labelText: 'Pet Price *',
                         ),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: RaisedButton(
+                        onPressed: () {
+                          final form = _formkey.currentState;
+                          _formkey.currentState!.validate();
+                          if (form!.validate() && url != null) {
+                            form.save();
+                            print(
+                                "$_petname\n$_breed\n$_year\n$_location\n$_price");
+                            petusr.add({
+                              'img':url,
+                              'petname': _petname,
+                              'breed': _breed,
+                              'year': _year,
+                              'location': _location,
+                              'price': _price
+                            });
+                          }
+                        },
+                        child: Text('Submit'),
+                        textColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(80.0)),
+                        color: Colors.blueAccent,
+                      ),
                     )
                   ],
                 )),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: RaisedButton(
-                onPressed: ()  {
-                  _formkey.currentState!.validate();
-                   petusr.add({
-                                'petname': _petname,
-                                'breed':_breed,
-                                'year':_year,
-                                'location':_location,
-                                'price':_price});
-                },
-                child: Text('Submit'),
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(80.0)),
-                color: Colors.blueAccent,
-              ),
-            )
           ]),
         ),
       ),
     );
   }
+
   Widget uploadImageButton(BuildContext context) {
     return Container(
       child: Stack(
@@ -278,25 +280,23 @@ var _formkey = GlobalKey<FormState>();
             padding:
                 const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
             margin: const EdgeInsets.only(
-                top: 30, left: 20.0, right: 20.0, bottom: 20.0),
+                top: 30, left: 20.0, right: 20.0, bottom: 0.0),
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [yellow, orange],
                 ),
                 borderRadius: BorderRadius.circular(30.0)),
             child: FlatButton(
-              onPressed: () => uploadImageToFirebase(context),
-              child: Text(
-                "Upload Image",
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
+                child: Text(
+                  "Upload Image",
+                  style: TextStyle(fontSize: 20),
+                ),
+                onPressed: () {
+                  pick ? uploadImageToFirebase(context) : null;
+                }),
           ),
         ],
       ),
-      );
-      }
-
-
+    );
+  }
 }
-
