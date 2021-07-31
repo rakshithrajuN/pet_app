@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_app/configuration.dart';
+import 'package:pet_app/widgets/form_page.dart';
 import 'package:pet_app/widgets/pet_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Petdetails(petname: doc['petname'],breed: doc['breed'],year: doc['year'],)));
                   },
+            
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Container(
@@ -60,10 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
+                      
                     ),
                   ),
                 );
-              
         });
   }
   @override
@@ -105,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
+       
         Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           margin: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
@@ -163,7 +166,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             return Expanded(child: _buildGride(snapshot.data));
                           },
                         ),
-        
+                         
+        FloatingActionButton(onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> Formpage()));
+        },child: Icon(Icons.add),),
       ]),
     );
   }
