@@ -16,6 +16,9 @@ class _HomeScreenState extends State<HomeScreen> {
   double yOffset = 0;
   double scaleFactor = 1;
   bool isDrawerOpen = false;
+  bool search = false;
+TextEditingController searchControler = TextEditingController();
+
  Widget _buildGride(QuerySnapshot? snapshot) {
     return ListView.builder(
         itemCount: snapshot!.docs.length,
@@ -38,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Row(
                         children: [
-                          Image.asset(dogimg[index]['iconPath'],
+                          Image.asset(dogimg[1]['iconPath'],
                               width: 100, height: 140),
                           SizedBox(
                             width: 70,
@@ -117,8 +120,31 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Icon(Icons.search),
-              Text('Search pet to adopt'),
-              Icon(Icons.settings)
+              SizedBox(
+                width:190,
+                child: TextField(
+                        onChanged: (value) {
+                          if (value.isNotEmpty) {
+                            setState(() {
+                              search = true;
+                             
+                            });
+                          } else {
+                            setState(() {
+                              search = false;
+                            });
+                          }
+                        },
+                        controller: searchControler,
+                        decoration: InputDecoration(
+                          hintText: "Search Pet Breed to Adopt ",
+                          border: InputBorder.none,
+                         
+                        ),
+                      ),
+              ),
+              
+              IconButton(icon: Icon(Icons.settings),onPressed: (){},)
             ],
           ),
         ),
@@ -153,7 +179,23 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
 
-         StreamBuilder<QuerySnapshot>(
+         search? StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection("pet")
+                          .where(
+                            'breed',
+                            isGreaterThanOrEqualTo: searchControler.text,
+                          )
+                          .where('breed', isLessThan: searchControler.text + 'z')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        print(snapshot.data);
+                        if (!snapshot.hasData) return LinearProgressIndicator();
+                        if (snapshot.hasError)
+                          return CircularProgressIndicator();
+                        return Expanded(child: _buildGride(snapshot.data));
+                      },
+                    ):StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
                               .collection("pet")
                               .snapshots(),
