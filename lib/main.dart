@@ -1,10 +1,10 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'authentication/auth.dart';
 import 'authentication/root_page.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/services.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
-
 
 void main() async {
 
@@ -17,14 +17,18 @@ void main() async {
       .then((_) {
     runApp(new MyApp());
   });
-}
 
+}
 class MyApp extends StatelessWidget {
+  const MyApp({ Key? key }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FoodCourt',
-      theme: ThemeData(primarySwatch: Colors.orange),
+      title: 'PetApp',
+      theme: ThemeData(
+        primarySwatch:Colors.orange
+      ),
       home: RootPage(
         auth: new Auth(),
         st: 'Register',
