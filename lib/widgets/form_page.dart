@@ -1,82 +1,31 @@
-import 'dart:io';
-
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-<<<<<<< HEAD
-=======
-import 'package:path/path.dart';
-import 'package:pet_app/authentication/auth.dart';
->>>>>>> a3782376d0e6e774699dd53e29978a0fb47e22da
-
-final Color yellow = Color(0xfffbc31b);
-final Color orange = Color(0xfffb6900);
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Formpage extends StatefulWidget {
+  const Formpage({Key? key}) : super(key: key);
+
   @override
-  _UploadingImageToFirebaseStorageState createState() =>
-      _UploadingImageToFirebaseStorageState();
+  _FormpageState createState() => _FormpageState();
 }
 
-<<<<<<< HEAD
 class _FormpageState extends State<Formpage> {
   var _formkey = GlobalKey<FormState>();
-  
+  CollectionReference petusr = FirebaseFirestore.instance.collection('pet');
+  String? _petname;
+  String? _breed;
+  String? _year;
+  String? _location;
+  String? _type;
+  String? _price;
+
   String selectedtype = "dog";
-=======
-class _UploadingImageToFirebaseStorageState extends State<Formpage> {
-  File? _imageFile;
-  String? url;
-
-  String? ph;
-
-  ///NOTE: Only supported on Android & iOS
-  ///Needs image_picker plugin {https://pub.dev/packages/image_picker}
-  final picker = ImagePicker();
-
-  void initState() {
-    super.initState();
-
-    // getphone();
-  }
-
-  // Future<void> getphone() async {
-  //   await auth!.getPhone().then((value) {
-  //     setState(() {
-  //       ph = value;
-  //     });
-  //   });
-  // }
-
-  Future pickImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-    setState(() {
-      _imageFile = File(pickedFile!.path);
-    });
-  }
-
-  Future uploadImageToFirebase(BuildContext context) async {
-    String fileName = basename(_imageFile!.path);
-    Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('uploads/$fileName');
-    UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile!);
-    await uploadTask.then((value) {
-      setState(() {
-        url = value.ref.getDownloadURL().toString();
-      });
-    });
-    print(url);
-  }
-
->>>>>>> a3782376d0e6e774699dd53e29978a0fb47e22da
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Pet Details'),
       ),
-<<<<<<< HEAD
       body: SingleChildScrollView(
         child: Container(
           child: Column(children: [
@@ -103,13 +52,19 @@ class _UploadingImageToFirebaseStorageState extends State<Formpage> {
                           }
                           return null;
                         },
+                        
+                        onSaved: (value) =>  _petname = value,
+                       
                         decoration: const InputDecoration(
                           icon: Icon(Icons.animation),
                           hintText: 'Enter Pet Name',
                           labelText: 'Pet Name *',
                         ),
+                        
                       ),
+                      
                     ),
+                    
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
@@ -119,6 +74,7 @@ class _UploadingImageToFirebaseStorageState extends State<Formpage> {
                           }
                           return null;
                         },
+                        onSaved: (value) => _breed = value,
                         decoration: const InputDecoration(
                           icon: Icon(Icons.person),
                           hintText: 'Enter Pet Breed',
@@ -135,6 +91,7 @@ class _UploadingImageToFirebaseStorageState extends State<Formpage> {
                           }
                           return null;
                         },
+                        onSaved: (value) => _location = value,
                         decoration: const InputDecoration(
                           icon: Icon(Icons.location_city),
                           hintText: 'Enter Pet Location',
@@ -151,6 +108,7 @@ class _UploadingImageToFirebaseStorageState extends State<Formpage> {
                           }
                           return null;
                         },
+                        onSaved: (value) => _year = value,
                         decoration: const InputDecoration(
                           icon: Icon(Icons.person),
                           hintText: 'Enter year',
@@ -159,39 +117,38 @@ class _UploadingImageToFirebaseStorageState extends State<Formpage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropdownButton<String>(
-                        icon: Icon(Icons.keyboard_arrow_down),
-                              iconSize: 15,
-                              elevation: 16,
-                              style: TextStyle(color: Colors.grey,fontWeight:FontWeight.bold),
-      
-                              underline: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(width: 1.0, style: BorderStyle.solid),
-                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                  ),
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownButton<String>(
+                            icon: Icon(Icons.keyboard_arrow_down),
+                            iconSize: 15,
+                            elevation: 16,
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold),
+                            underline: Container(
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      width: 1.0, style: BorderStyle.solid),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
                                 ),
+                              ),
                             ),
-                        value: selectedtype,
-                        onChanged: (String? newvalue){
-                          setState(() {
-                            selectedtype = newvalue!;
-                          }
-                        
-                          );
-                        },
-                        items: <String>["dog", "cat", "bird", "rabbit"].
-                        map<DropdownMenuItem<String>>((String value){
-                        
-                          return DropdownMenuItem<String>(
-                             value: value,
-                              child: Text(value),
-                                    );
-                        }).toList()
-                        )        
-                      ),
+                            value: selectedtype,
+                            onChanged: (String? newvalue) {
+                              setState(() {
+                                selectedtype = newvalue!;
+                              });
+                            },
+                            items: <String>["dog", "cat", "bird", "rabbit"]
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                                
+                              );
+                            }).toList())),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
@@ -201,6 +158,7 @@ class _UploadingImageToFirebaseStorageState extends State<Formpage> {
                           }
                           return null;
                         },
+                        onSaved: (value) => _price = value,
                         decoration: const InputDecoration(
                           icon: Icon(Icons.person),
                           hintText: 'Enter Pet Price',
@@ -213,8 +171,14 @@ class _UploadingImageToFirebaseStorageState extends State<Formpage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: RaisedButton(
-                onPressed: () {
+                onPressed: ()  {
                   _formkey.currentState!.validate();
+                   petusr.add({
+                                'petname': _petname,
+                                'breed':_breed,
+                                'year':_year,
+                                'location':_location,
+                                'price':_price});
                 },
                 child: Text('Submit'),
                 textColor: Colors.white,
@@ -225,65 +189,6 @@ class _UploadingImageToFirebaseStorageState extends State<Formpage> {
             )
           ]),
         ),
-=======
-      body:  Column(
-              children: <Widget>[
-               
-               
-                Expanded(
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                        height: 200,
-                        margin: const EdgeInsets.only(
-                            left: 30.0, right: 30.0, top: 10.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30.0),
-                          child: _imageFile != null
-                              ? Image.file(_imageFile!)
-                              : FlatButton(
-                                  child: Icon(
-                                    Icons.add_a_photo,
-                                    size: 50,
-                                  ),
-                                  onPressed: pickImage,
-                                ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                uploadImageButton(context),
-              ],
-            ),
-          
-    );
-  }
-
-  Widget uploadImageButton(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: <Widget>[
-          Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
-            margin: const EdgeInsets.only(
-                top: 30, left: 20.0, right: 20.0, bottom: 20.0),
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [yellow, orange],
-                ),
-                borderRadius: BorderRadius.circular(30.0)),
-            child: FlatButton(
-              onPressed: () => uploadImageToFirebase(context),
-              child: Text(
-                "Upload Image",
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ),
-        ],
->>>>>>> a3782376d0e6e774699dd53e29978a0fb47e22da
       ),
     );
   }
