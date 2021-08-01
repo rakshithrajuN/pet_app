@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pet_app/HomeScreen.dart';
-
-import '../entry.dart';
 import 'login_page.dart';
 
 import 'auth.dart';
@@ -71,7 +69,7 @@ class _RootPageState extends State<RootPage> {
         }
       case AuthStatus.signedIn:
         {
-          return new EntryPage(
+          return new HomeScreen(
               
               auth: widget.auth,
               onSignOut: () => _updateAuthStatus(AuthStatus.notSignedIn),
