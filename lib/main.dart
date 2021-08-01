@@ -2,6 +2,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pet_app/configuration.dart';
 
 import 'authentication/auth.dart';
 import 'authentication/root_page.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'PetApp',
       theme: ThemeData(
-        primarySwatch:Colors.orange
+        primarySwatch:Colors.green
       ),
       home: RootPage(
         auth: new Auth(),
