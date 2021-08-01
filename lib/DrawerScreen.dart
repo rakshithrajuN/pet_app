@@ -11,8 +11,30 @@ class DrawerScreen extends StatefulWidget {
 class _DrawerScreenState extends State<DrawerScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: primaryGreen,
-    );
+    return Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget> [
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: primaryGreen),
+              accountName: Text("Rakshith Raju N"), 
+              accountEmail: Text("rakshithraju2000@gmail.com"),
+              
+                 ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text("Delete Pet"),
+                subtitle: Text("pet"),
+                trailing: Icon(Icons.delete),
+              ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text("Sign Out"),
+                trailing: Icon(Icons.logout_rounded),
+              )
+          ],
+        ),
+        
+      );
   }
 }
