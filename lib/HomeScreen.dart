@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:pet_app/DrawerScreen.dart';
+import 'package:pet_app/authentication/auth.dart';
 import 'package:pet_app/configuration.dart';
 import 'package:pet_app/widgets/form_page.dart';
 import 'package:pet_app/widgets/pet_details.dart';
@@ -9,13 +9,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_app/widgets/show.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
+  const HomeScreen({Key? key,
+  required this.auth,required this.onSignOut}) : super(key: key);
+  final BaseAuth auth;
+  final VoidCallback onSignOut;
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  void _signOut() async {
+    try {
+      await widget.auth.signOut();
+      widget.onSignOut();
+    } catch (e) {
+      print(e);
+    }
+  }
   bool search = false;
   String filter = '';
   bool dpress = false;
@@ -369,7 +379,37 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ]),
       ),
-      drawer: DrawerScreen(),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget> [
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: primaryGreen),
+              accountName: Text("Rakshith Raju N"), 
+              accountEmail: Text("rakshithraju2000@gmail.com"),
+              
+                 ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text("Delete Pet"),
+                subtitle: Text("pet"),
+                trailing: Icon(Icons.delete),
+              ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text("Sign Out"),
+                trailing: Icon(Icons.logout_rounded),
+                onTap: (){
+                  
+                       _signOut();
+                  
+                },
+
+              )
+          ],
+        ),
+        
+      ),
     );
   }
 }
